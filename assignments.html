@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments - Student Tasks Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="dashboard.html" class="flex items-center text-xl font-bold text-primary-600 dark:text-primary-400">
+                        <i class="fas fa-graduation-cap mr-2"></i>
+                        Student Tasks Manager
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Toggle dark mode">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+                    
+                    <!-- Notifications Dropdown -->
+                    <div class="relative">
+                        <button class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors relative" onclick="toggleNotifications()">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                        </button>
+                        <div id="notificationsDropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 hidden z-50">
+                            <div class="p-4">
+                                <h6 class="font-semibold text-gray-900 dark:text-white mb-3">Notifications</h6>
+                                <div class="space-y-2">
+                                    <a href="#" class="block p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded text-sm text-gray-700 dark:text-gray-300">New assignment posted</a>
+                                    <a href="#" class="block p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded text-sm text-gray-700 dark:text-gray-300">Attendance reminder</a>
+                                    <a href="#" class="block p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded text-sm text-gray-700 dark:text-gray-300">Library book due</a>
+                                </div>
+                                <div class="border-t border-gray-200 dark:border-gray-600 mt-3 pt-3">
+                                    <a href="notifications.html" class="text-primary-600 dark:text-primary-400 text-sm hover:underline">View all</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" onclick="toggleUserMenu()">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="userName">User</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 hidden z-50">
+                            <div class="py-1">
+                                <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <i class="fas fa-user mr-2"></i>Profile
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <i class="fas fa-cog mr-2"></i>Settings
+                                </a>
+                                <div class="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+                                <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600">
+                    <h5 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        <i class="fas fa-tachometer-alt mr-2 text-primary-600"></i>Navigation
+                    </h5>
+                    <nav class="space-y-2">
+                        <a href="dashboard.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-home mr-3"></i>Dashboard
+                        </a>
+                        <a href="assignments.html" class="flex items-center px-3 py-2 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-lg font-medium">
+                            <i class="fas fa-tasks mr-3"></i>Assignments
+                        </a>
+                        <a href="courses.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-book mr-3"></i>Courses & NPTEL
+                        </a>
+                        <a href="todo.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-check-square mr-3"></i>To-Do List
+                        </a>
+                        <a href="issues.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-exclamation-triangle mr-3"></i>Report Issues
+                        </a>
+                        <a href="library.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-book-open mr-3"></i>Library
+                        </a>
+                        <a href="attendance.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-chart-line mr-3"></i>Attendance
+                        </a>
+                        <a href="notifications.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-bell mr-3"></i>Notifications
+                        </a>
+                        <a href="announcements.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-bullhorn mr-3"></i>Announcements
+                        </a>
+                        <div id="crSection" class="hidden">
+                            <a href="cr_section.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-user-tie mr-3"></i>CR Section
+                            </a>
+                        </div>
+                        <div id="teacherSection" class="hidden">
+                            <a href="teacher_section.html" class="flex items-center px-3 py-2 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-chalkboard-teacher mr-3"></i>Teacher Section
+                            </a>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3">
+                <!-- Header -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div class="mb-4 md:mb-0">
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                <i class="fas fa-tasks text-primary-600 mr-2"></i>Assignments
+                            </h2>
+                            <p class="text-gray-600 dark:text-gray-400">Manage your academic assignments and submissions</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors" onclick="openFilterModal()">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <div class="relative">
+                                <button class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:ring-4 focus:ring-primary-500/30 transition-colors" onclick="toggleActionsMenu()">
+                                    <i class="fas fa-plus mr-2"></i>Actions
+                                    <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                                </button>
+                                <div id="actionsDropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 hidden z-50">
+                                    <div class="py-1">
+                                        <a href="#" onclick="openSubmitModal()" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                            <i class="fas fa-upload mr-2"></i>Submit Assignment
+                                        </a>
+                                        <div id="createAssignmentOption" class="hidden">
+                                            <a href="#" onclick="openCreateModal()" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                                <i class="fas fa-plus mr-2"></i>Create Assignment
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
+                                <i class="fas fa-tasks text-blue-600 dark:text-blue-400"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Assignments</p>
+                                <p class="text-2xl font-semibold text-gray-900 dark:text-white" id="totalAssignments">12</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900">
+                                <i class="fas fa-clock text-yellow-600 dark:text-yellow-400"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</p>
+                                <p class="text-2xl font-semibold text-gray-900 dark:text-white" id="pendingAssignments">5</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100 dark:bg-green-900">
+                                <i class="fas fa-check text-green-600 dark:text-green-400"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Submitted</p>
+                                <p class="text-2xl font-semibold text-gray-900 dark:text-white" id="submittedAssignments">7</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-red-100 dark:bg-red-900">
+                                <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Overdue</p>
+                                <p class="text-2xl font-semibold text-gray-900 dark:text-white" id="overdueAssignments">2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" id="searchAssignments" placeholder="Search assignments...">
+                            </div>
+                        </div>
+                        <div>
+                            <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" id="statusFilter" title="Filter by assignment status">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="submitted">Submitted</option>
+                                <option value="overdue">Overdue</option>
+                                <option value="graded">Graded</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignments List -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-600">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Recent Assignments</h3>
+                    <div id="assignmentsList" class="space-y-4">
+                        <!-- Assignment items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Assignment Modal -->
+    <div class="modal fade" id="submitAssignmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-upload me-2"></i>Submit Assignment
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="submitAssignmentForm">
+                        <div class="mb-3">
+                            <label for="assignmentSelect" class="form-label">Select Assignment</label>
+                            <select class="form-select" id="assignmentSelect" required>
+                                <option value="">Choose an assignment...</option>
+                                <option value="1">Database Assignment - CS301</option>
+                                <option value="2">Web Development Project - CS302</option>
+                                <option value="3">Research Paper - CS303</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="assignmentTitle" class="form-label">Assignment Title</label>
+                            <input type="text" class="form-control" id="assignmentTitle" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="assignmentDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="assignmentDescription" rows="3" readonly></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="submissionFile" class="form-label">Upload File</label>
+                            <div class="file-upload">
+                                <div class="drop-zone border-2 border-dashed border-secondary rounded p-4 text-center">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                    <p class="mb-2">Drag and drop files here or click to browse</p>
+                                    <input type="file" class="form-control" id="submissionFile" accept=".pdf,.doc,.docx,.zip,.rar" required>
+                                </div>
+                                <div class="file-preview mt-3"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="submissionNotes" class="form-label">Additional Notes (Optional)</label>
+                            <textarea class="form-control" id="submissionNotes" rows="3" placeholder="Any additional comments or notes..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="submitAssignmentForm" class="btn btn-primary">
+                        <i class="fas fa-upload me-2"></i>Submit Assignment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Assignment Modal (for teachers) -->
+    <div class="modal fade" id="createAssignmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus me-2"></i>Create New Assignment
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createAssignmentForm">
+                        <div class="mb-3">
+                            <label for="newAssignmentTitle" class="form-label">Assignment Title</label>
+                            <input type="text" class="form-control" id="newAssignmentTitle" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newAssignmentSubject" class="form-label">Subject</label>
+                            <select class="form-select" id="newAssignmentSubject" required>
+                                <option value="">Select subject...</option>
+                                <option value="CS301">CS301 - Database Management</option>
+                                <option value="CS302">CS302 - Web Development</option>
+                                <option value="CS303">CS303 - Software Engineering</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newAssignmentDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="newAssignmentDescription" rows="4" required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="assignmentDeadline" class="form-label">Deadline</label>
+                                    <input type="datetime-local" class="form-control" id="assignmentDeadline" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="assignmentPoints" class="form-label">Total Points</label>
+                                    <input type="number" class="form-control" id="assignmentPoints" min="1" max="100" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="assignmentFile" class="form-label">Assignment File (Optional)</label>
+                            <div class="file-upload">
+                                <div class="drop-zone border-2 border-dashed border-secondary rounded p-4 text-center">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                    <p class="mb-2">Upload assignment file</p>
+                                    <input type="file" class="form-control" id="assignmentFile" accept=".pdf,.doc,.docx">
+                                </div>
+                                <div class="file-preview mt-3"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="createAssignmentForm" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create Assignment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-filter me-2"></i>Filter Assignments
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="filterSubject" class="form-label">Subject</label>
+                        <select class="form-select" id="filterSubject">
+                            <option value="">All Subjects</option>
+                            <option value="CS301">CS301 - Database Management</option>
+                            <option value="CS302">CS302 - Web Development</option>
+                            <option value="CS303">CS303 - Software Engineering</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="filterStatus" class="form-label">Status</label>
+                        <select class="form-select" id="filterStatus">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="submitted">Submitted</option>
+                            <option value="overdue">Overdue</option>
+                            <option value="graded">Graded</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="filterDateRange" class="form-label">Date Range</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="date" class="form-control" id="filterDateFrom" placeholder="From">
+                            </div>
+                            <div class="col-6">
+                                <input type="date" class="form-control" id="filterDateTo" placeholder="To">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-filter me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
+    
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/assignments.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Sample assignments data
+        const assignments = [
+            {
+                id: 1,
+                title: "Database Assignment",
+                subject: "CS301",
+                description: "Create a database schema for a library management system",
+                deadline: "2024-01-15T23:59:00",
+                points: 25,
+                status: "pending",
+                submitted: false,
+                grade: null
+            },
+            {
+                id: 2,
+                title: "Web Development Project",
+                subject: "CS302",
+                description: "Build a responsive website using HTML, CSS, and JavaScript",
+                deadline: "2024-01-20T23:59:00",
+                points: 30,
+                status: "submitted",
+                submitted: true,
+                grade: null
+            },
+            {
+                id: 3,
+                title: "Research Paper",
+                subject: "CS303",
+                description: "Write a research paper on software development methodologies",
+                deadline: "2024-01-10T23:59:00",
+                points: 20,
+                status: "overdue",
+                submitted: false,
+                grade: null
+            },
+            {
+                id: 4,
+                title: "Algorithm Analysis",
+                subject: "CS301",
+                description: "Analyze time complexity of sorting algorithms",
+                deadline: "2024-01-05T23:59:00",
+                points: 15,
+                status: "graded",
+                submitted: true,
+                grade: 85
+            }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for dark mode preference
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'dark' || (!darkMode && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            checkAuth();
+            loadAssignments();
+            setupEventListeners();
+        });
+
+        // Load assignments
+        function loadAssignments() {
+            const container = document.getElementById('assignmentsList');
+            container.innerHTML = '';
+
+            assignments.forEach(assignment => {
+                const assignmentCard = createAssignmentCard(assignment);
+                container.appendChild(assignmentCard);
+            });
+
+            updateStatistics();
+        }
+
+        // Create assignment card
+        function createAssignmentCard(assignment) {
+            const card = document.createElement('div');
+            card.className = 'bg-white dark:bg-gray-700 rounded-xl shadow-md border border-gray-200 dark:border-gray-600 p-6 assignment-card hover:shadow-lg transition-shadow';
+            card.setAttribute('data-search', `${assignment.title} ${assignment.subject} ${assignment.description}`);
+            card.setAttribute('data-status', assignment.status);
+            card.setAttribute('data-subject', assignment.subject);
+
+            const deadline = new Date(assignment.deadline);
+            const now = new Date();
+            const isOverdue = deadline < now && !assignment.submitted;
+
+            const statusBadge = getStatusBadge(assignment.status, isOverdue);
+            const deadlineText = getDeadlineText(deadline, isOverdue);
+
+            card.innerHTML = `
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                    <div class="flex-1 mb-4 lg:mb-0">
+                        <div class="flex justify-between items-start mb-3">
+                            <h5 class="text-lg font-semibold text-gray-900 dark:text-white">${assignment.title}</h5>
+                            ${statusBadge}
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <i class="fas fa-book mr-1"></i>${assignment.subject}
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-star mr-1"></i>${assignment.points} points
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-3">${assignment.description}</p>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-clock mr-1 text-yellow-500"></i>
+                            <span class="mr-4">${deadlineText}</span>
+                            ${assignment.grade ? `<i class="fas fa-chart-line mr-1 text-green-500"></i><span class="text-green-600 dark:text-green-400">Grade: ${assignment.grade}%</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                        ${!assignment.submitted ? `
+                            <button class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:ring-4 focus:ring-primary-500/30 transition-colors" onclick="submitAssignment(${assignment.id})">
+                                <i class="fas fa-upload mr-2"></i>Submit
+                            </button>
+                        ` : `
+                            <button class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg cursor-not-allowed opacity-75" disabled>
+                                <i class="fas fa-check mr-2"></i>Submitted
+                            </button>
+                        `}
+                        <button class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors" onclick="viewAssignment(${assignment.id})">
+                            <i class="fas fa-eye mr-2"></i>View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Get status badge
+        function getStatusBadge(status, isOverdue) {
+            const badges = {
+                pending: '<span class="badge bg-warning">Pending</span>',
+                submitted: '<span class="badge bg-info">Submitted</span>',
+                overdue: '<span class="badge bg-danger">Overdue</span>',
+                graded: '<span class="badge bg-success">Graded</span>'
+            };
+
+            if (isOverdue) {
+                return '<span class="badge bg-danger">Overdue</span>';
+            }
+
+            return badges[status] || '<span class="badge bg-secondary">Unknown</span>';
+        }
+
+        // Get deadline text
+        function getDeadlineText(deadline, isOverdue) {
+            if (isOverdue) {
+                return `<span class="text-danger">Deadline passed</span>`;
+            }
+
+            const now = new Date();
+            const diff = deadline - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+            if (days > 0) {
+                return `Due in ${days} day${days > 1 ? 's' : ''}`;
+            } else if (hours > 0) {
+                return `Due in ${hours} hour${hours > 1 ? 's' : ''}`;
+            } else {
+                return `<span class="text-danger">Due today</span>`;
+            }
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const total = assignments.length;
+            const pending = assignments.filter(a => a.status === 'pending' && !a.submitted).length;
+            const submitted = assignments.filter(a => a.submitted).length;
+            const overdue = assignments.filter(a => {
+                const deadline = new Date(a.deadline);
+                return deadline < new Date() && !a.submitted;
+            }).length;
+
+            document.getElementById('totalAssignments').textContent = total;
+            document.getElementById('pendingAssignments').textContent = pending;
+            document.getElementById('submittedAssignments').textContent = submitted;
+            document.getElementById('overdueAssignments').textContent = overdue;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('searchAssignments').addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.assignment-card');
+                
+                cards.forEach(card => {
+                    const text = card.getAttribute('data-search').toLowerCase();
+                    card.style.display = text.includes(query) ? 'block' : 'none';
+                });
+            });
+
+            // Status filter
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                const status = this.value;
+                const cards = document.querySelectorAll('.assignment-card');
+                
+                cards.forEach(card => {
+                    const cardStatus = card.getAttribute('data-status');
+                    card.style.display = !status || cardStatus === status ? 'block' : 'none';
+                });
+            });
+
+            // Assignment select change
+            document.getElementById('assignmentSelect').addEventListener('change', function() {
+                const assignmentId = this.value;
+                if (assignmentId) {
+                    const assignment = assignments.find(a => a.id == assignmentId);
+                    if (assignment) {
+                        document.getElementById('assignmentTitle').value = assignment.title;
+                        document.getElementById('assignmentDescription').value = assignment.description;
+                    }
+                }
+            });
+
+            // Form submissions
+            document.getElementById('submitAssignmentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitAssignmentForm();
+            });
+
+            document.getElementById('createAssignmentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                createAssignment();
+            });
+        }
+
+        // Submit assignment
+        function submitAssignment(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (assignment) {
+                document.getElementById('assignmentSelect').value = assignmentId;
+                document.getElementById('assignmentTitle').value = assignment.title;
+                document.getElementById('assignmentDescription').value = assignment.description;
+                
+                const modal = new bootstrap.Modal(document.getElementById('submitAssignmentModal'));
+                modal.show();
+            }
+        }
+
+        // Submit assignment form
+        function submitAssignmentForm() {
+            const assignmentId = document.getElementById('assignmentSelect').value;
+            const file = document.getElementById('submissionFile').files[0];
+            const notes = document.getElementById('submissionNotes').value;
+
+            if (!file) {
+                showToast('Please select a file to upload', 'error');
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = document.querySelector('#submitAssignmentForm button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+            submitBtn.disabled = true;
+
+            // Simulate submission
+            setTimeout(() => {
+                // Update assignment status
+                const assignment = assignments.find(a => a.id == assignmentId);
+                if (assignment) {
+                    assignment.status = 'submitted';
+                    assignment.submitted = true;
+                }
+
+                // Close modal and reload
+                bootstrap.Modal.getInstance(document.getElementById('submitAssignmentModal')).hide();
+                loadAssignments();
+                
+                showToast('Assignment submitted successfully!', 'success');
+                
+                // Reset form
+                document.getElementById('submitAssignmentForm').reset();
+                document.querySelector('.file-preview').innerHTML = '';
+                
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        }
+
+        // Create assignment (for teachers)
+        function createAssignment() {
+            const formData = new FormData(document.getElementById('createAssignmentForm'));
+            
+            // Show loading state
+            const submitBtn = document.querySelector('#createAssignmentForm button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+            submitBtn.disabled = true;
+
+            // Simulate creation
+            setTimeout(() => {
+                const newAssignment = {
+                    id: assignments.length + 1,
+                    title: formData.get('newAssignmentTitle'),
+                    subject: formData.get('newAssignmentSubject'),
+                    description: formData.get('newAssignmentDescription'),
+                    deadline: formData.get('assignmentDeadline'),
+                    points: parseInt(formData.get('assignmentPoints')),
+                    status: 'pending',
+                    submitted: false,
+                    grade: null
+                };
+
+                assignments.unshift(newAssignment);
+                
+                // Close modal and reload
+                bootstrap.Modal.getInstance(document.getElementById('createAssignmentModal')).hide();
+                loadAssignments();
+                
+                showToast('Assignment created successfully!', 'success');
+                
+                // Reset form
+                document.getElementById('createAssignmentForm').reset();
+                document.querySelector('.file-preview').innerHTML = '';
+                
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        }
+
+        // View assignment details
+        function viewAssignment(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (assignment) {
+                // In a real app, this would open a detailed view modal
+                showToast(`Viewing details for: ${assignment.title}`, 'info');
+            }
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const subject = document.getElementById('filterSubject').value;
+            const status = document.getElementById('filterStatus').value;
+            const dateFrom = document.getElementById('filterDateFrom').value;
+            const dateTo = document.getElementById('filterDateTo').value;
+
+            const cards = document.querySelectorAll('.assignment-card');
+            
+            cards.forEach(card => {
+                const cardSubject = card.getAttribute('data-subject');
+                const cardStatus = card.getAttribute('data-status');
+                
+                let show = true;
+                
+                if (subject && cardSubject !== subject) show = false;
+                if (status && cardStatus !== status) show = false;
+                
+                card.style.display = show ? 'block' : 'none';
+            });
+
+            bootstrap.Modal.getInstance(document.getElementById('filterModal')).hide();
+            showToast('Filters applied successfully!', 'success');
+        }
+
+        // Check authentication and show teacher options
+        function checkAuth() {
+            const userData = JSON.parse(localStorage.getItem('userData') || sessionStorage.getItem('userData') || '{}');
+            
+            if (userData.role === 'teacher') {
+                document.getElementById('createAssignmentOption').style.display = 'block';
+            }
+            
+            if (userData.name) {
+                document.getElementById('userName').textContent = userData.name;
+            }
+        }
+    </script>
+</body>
+</html>

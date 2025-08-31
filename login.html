@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Student Tasks Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out',
+                        'shake': 'shake 0.5s ease-in-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-5px)' },
+                            '20%, 40%, 60%, 80%': { transform: 'translateX(5px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen transition-colors duration-300">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="darkModeToggle" class="p-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 group" title="Toggle dark mode">
+            <i class="fas fa-moon text-gray-600 dark:hidden group-hover:text-primary-600 transition-colors"></i>
+            <i class="fas fa-sun text-gray-300 hidden dark:block group-hover:text-yellow-400 transition-colors"></i>
+        </button>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="fixed top-4 left-4 z-50">
+        <a href="index.html" class="flex items-center px-4 py-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 group text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">
+            <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+            Back to Home
+        </a>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md animate-bounce-in">
+            <!-- Auth Card -->
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-8 animate-slide-up">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-indigo-600 rounded-full mb-4 shadow-lg">
+                        <i class="fas fa-graduation-cap text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Sign in to your account</p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-6" novalidate>
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Email Address
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                required
+                                autocomplete="email"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Enter your email"
+                                aria-describedby="email-error"
+                            >
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i id="emailIcon" class="fas fa-check-circle text-green-500 hidden"></i>
+                                <i id="emailErrorIcon" class="fas fa-exclamation-circle text-red-500 hidden"></i>
+                            </div>
+                        </div>
+                        <div id="email-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                required
+                                autocomplete="current-password"
+                                class="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Enter your password"
+                                aria-describedby="password-error"
+                            >
+                            <button 
+                                type="button" 
+                                id="togglePassword" 
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                title="Toggle password visibility"
+                                aria-label="Toggle password visibility"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div id="password-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="rememberMe" class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Remember me</span>
+                        </label>
+                        <button 
+                            type="button" 
+                            onclick="openForgotPasswordModal()"
+                            class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                        >
+                            Forgot password?
+                        </button>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        id="loginSubmitBtn"
+                        class="w-full bg-gradient-to-r from-primary-600 to-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:from-primary-700 hover:to-indigo-700 focus:ring-4 focus:ring-primary-500/30 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    >
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        <span id="loginBtnText">Sign In</span>
+                    </button>
+
+                    <!-- Biometric Login -->
+                    <div id="biometricSection" class="hidden">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Or</span>
+                            </div>
+                        </div>
+                        <button 
+                            type="button" 
+                            id="biometricLoginBtn"
+                            class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+                        >
+                            <i class="fas fa-fingerprint text-primary-600 mr-2"></i>
+                            Sign in with Biometric
+                        </button>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Login -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button 
+                            type="button" 
+                            id="googleLoginBtn"
+                            class="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+                        >
+                            <i class="fab fa-google text-red-500 mr-2"></i>
+                            Google
+                        </button>
+                        <button 
+                            type="button" 
+                            id="microsoftLoginBtn"
+                            class="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+                        >
+                            <i class="fab fa-microsoft text-blue-500 mr-2"></i>
+                            Microsoft
+                        </button>
+                    </div>
+
+                    <!-- Sign Up Link -->
+                    <div class="text-center">
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Don't have an account? 
+                            <a href="signup.html" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">
+                                Create one
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 animate-bounce-in">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        <i class="fas fa-key text-primary-600 mr-2"></i>
+                        Reset Password
+                    </h3>
+                    <button 
+                        onclick="closeForgotPasswordModal()"
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        title="Close modal"
+                    >
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form id="forgotPasswordForm" class="space-y-4" novalidate>
+                    <div>
+                        <label for="resetEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="resetEmail" 
+                            required
+                            autocomplete="email"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                            placeholder="Enter your email address"
+                        >
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            We'll send you a link to reset your password.
+                        </p>
+                    </div>
+                    
+                    <div class="flex gap-3 pt-4">
+                        <button 
+                            type="button" 
+                            onclick="closeForgotPasswordModal()"
+                            class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit" 
+                            id="resetPasswordBtn"
+                            class="flex-1 bg-primary-600 text-white px-4 py-2 rounded-xl hover:bg-primary-700 focus:ring-4 focus:ring-primary-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            <span id="resetBtnText">Send Reset Link</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Enhanced Login Form Handler
+        class LoginFormHandler {
+            constructor() {
+                this.form = document.getElementById('loginForm');
+                this.emailInput = document.getElementById('email');
+                this.passwordInput = document.getElementById('password');
+                this.submitBtn = document.getElementById('loginSubmitBtn');
+                this.loginBtnText = document.getElementById('loginBtnText');
+                this.biometricSection = document.getElementById('biometricSection');
+                this.biometricLoginBtn = document.getElementById('biometricLoginBtn');
+                this.googleLoginBtn = document.getElementById('googleLoginBtn');
+                this.microsoftLoginBtn = document.getElementById('microsoftLoginBtn');
+                
+                this.initializeEventListeners();
+                this.checkBiometricSupport();
+                this.loadSavedCredentials();
+            }
+
+            initializeEventListeners() {
+                // Form submission
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                // Real-time validation
+                this.emailInput.addEventListener('input', () => this.validateEmail());
+                this.passwordInput.addEventListener('input', () => this.validatePassword());
+                
+                // Password toggle
+                document.getElementById('togglePassword').addEventListener('click', () => this.togglePassword());
+                
+                // Social login
+                this.googleLoginBtn.addEventListener('click', () => this.handleGoogleLogin());
+                this.microsoftLoginBtn.addEventListener('click', () => this.handleMicrosoftLogin());
+                
+                // Biometric login
+                this.biometricLoginBtn.addEventListener('click', () => this.handleBiometricLogin());
+                
+                // Auto-save credentials
+                this.form.addEventListener('input', () => this.autoSaveCredentials());
+            }
+
+            validateEmail() {
+                const email = this.emailInput.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const isValid = emailRegex.test(email);
+                
+                this.updateFieldValidation(this.emailInput, isValid, 'Please enter a valid email address');
+                return isValid;
+            }
+
+            validatePassword() {
+                const password = this.passwordInput.value;
+                const isValid = password.length >= 6;
+                
+                this.updateFieldValidation(this.passwordInput, isValid, 'Password must be at least 6 characters');
+                return isValid;
+            }
+
+            updateFieldValidation(field, isValid, errorMessage) {
+                const errorElement = document.getElementById(`${field.id}-error`);
+                const icon = document.getElementById(`${field.id}Icon`);
+                const errorIcon = document.getElementById(`${field.id}ErrorIcon`);
+                
+                field.classList.remove('border-red-500', 'border-green-500');
+                
+                if (field.value.trim() === '') {
+                    field.classList.remove('border-red-500', 'border-green-500');
+                    if (errorElement) errorElement.classList.add('hidden');
+                    if (icon) icon.classList.add('hidden');
+                    if (errorIcon) errorIcon.classList.add('hidden');
+                    return;
+                }
+                
+                if (isValid) {
+                    field.classList.add('border-green-500');
+                    if (errorElement) errorElement.classList.add('hidden');
+                    if (icon) icon.classList.remove('hidden');
+                    if (errorIcon) errorIcon.classList.add('hidden');
+                } else {
+                    field.classList.add('border-red-500');
+                    if (errorElement) {
+                        errorElement.textContent = errorMessage;
+                        errorElement.classList.remove('hidden');
+                    }
+                    if (icon) icon.classList.add('hidden');
+                    if (errorIcon) errorIcon.classList.remove('hidden');
+                }
+            }
+
+            togglePassword() {
+                const password = this.passwordInput;
+                const icon = document.querySelector('#togglePassword i');
+                
+                if (password.type === 'password') {
+                    password.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    password.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                if (!this.validateEmail() || !this.validatePassword()) {
+                    this.form.classList.add('animate-shake');
+                    setTimeout(() => this.form.classList.remove('animate-shake'), 500);
+                    return;
+                }
+                
+                const email = this.emailInput.value.trim();
+                const password = this.passwordInput.value;
+                const rememberMe = document.getElementById('rememberMe').checked;
+                
+                this.setLoadingState(true);
+                
+                try {
+                    if (window.authManager) {
+                        await window.authManager.signIn(email, password, rememberMe);
+                    } else {
+                        // Fallback for demo
+                        await this.demoLogin(email, password, rememberMe);
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.setLoadingState(false);
+                }
+            }
+
+            async demoLogin(email, password, rememberMe) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        const userData = {
+                            email: email,
+                            role: 'student',
+                            name: 'John Doe',
+                            phone: '+1234567890'
+                        };
+                        
+                        if (rememberMe) {
+                            localStorage.setItem('userData', JSON.stringify(userData));
+                        } else {
+                            sessionStorage.setItem('userData', JSON.stringify(userData));
+                        }
+                        
+                        showToast('Login successful!', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                        resolve();
+                    }, 2000);
+                });
+            }
+
+            setLoadingState(isLoading) {
+                this.submitBtn.disabled = isLoading;
+                if (isLoading) {
+                    this.loginBtnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
+                } else {
+                    this.loginBtnText.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+                }
+            }
+
+            checkBiometricSupport() {
+                if (window.PublicKeyCredential && window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
+                    window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+                        .then((available) => {
+                            if (available) {
+                                this.biometricSection.classList.remove('hidden');
+                            }
+                        });
+                }
+            }
+
+            async handleBiometricLogin() {
+                try {
+                    showToast('Biometric authentication coming soon!', 'info');
+                } catch (error) {
+                    console.error('Biometric login error:', error);
+                    showToast('Biometric authentication failed', 'error');
+                }
+            }
+
+            async handleGoogleLogin() {
+                try {
+                    if (window.authManager) {
+                        await window.authManager.signInWithGoogle();
+                    } else {
+                        showToast('Google login coming soon!', 'info');
+                    }
+                } catch (error) {
+                    console.error('Google login error:', error);
+                    showToast('Google login failed', 'error');
+                }
+            }
+
+            async handleMicrosoftLogin() {
+                try {
+                    showToast('Microsoft login coming soon!', 'info');
+                } catch (error) {
+                    console.error('Microsoft login error:', error);
+                    showToast('Microsoft login failed', 'error');
+                }
+            }
+
+            autoSaveCredentials() {
+                const email = this.emailInput.value;
+                const rememberMe = document.getElementById('rememberMe').checked;
+                
+                if (rememberMe && email) {
+                    localStorage.setItem('savedEmail', email);
+                } else {
+                    localStorage.removeItem('savedEmail');
+                }
+            }
+
+            loadSavedCredentials() {
+                const savedEmail = localStorage.getItem('savedEmail');
+                if (savedEmail) {
+                    this.emailInput.value = savedEmail;
+                    document.getElementById('rememberMe').checked = true;
+                }
+            }
+        }
+
+        // Enhanced Forgot Password Handler
+        class ForgotPasswordHandler {
+            constructor() {
+                this.form = document.getElementById('forgotPasswordForm');
+                this.emailInput = document.getElementById('resetEmail');
+                this.submitBtn = document.getElementById('resetPasswordBtn');
+                this.resetBtnText = document.getElementById('resetBtnText');
+                
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                this.emailInput.addEventListener('input', () => this.validateEmail());
+            }
+
+            validateEmail() {
+                const email = this.emailInput.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const isValid = emailRegex.test(email);
+                
+                this.emailInput.classList.remove('border-red-500', 'border-green-500');
+                if (email && isValid) {
+                    this.emailInput.classList.add('border-green-500');
+                } else if (email && !isValid) {
+                    this.emailInput.classList.add('border-red-500');
+                }
+                
+                return isValid;
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                if (!this.validateEmail()) {
+                    showToast('Please enter a valid email address', 'error');
+                    return;
+                }
+                
+                const email = this.emailInput.value.trim();
+                this.setLoadingState(true);
+                
+                try {
+                    if (window.authManager) {
+                        await window.authManager.sendPasswordResetEmail(email);
+                        closeForgotPasswordModal();
+                    } else {
+                        // Fallback for demo
+                        await this.demoResetPassword(email);
+                    }
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            async demoResetPassword(email) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        showToast('Password reset link has been sent to your email!', 'success');
+                        closeForgotPasswordModal();
+                        resolve();
+                    }, 2000);
+                });
+            }
+
+            setLoadingState(isLoading) {
+                this.submitBtn.disabled = isLoading;
+                if (isLoading) {
+                    this.resetBtnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+                } else {
+                    this.resetBtnText.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send Reset Link';
+                }
+            }
+        }
+
+        // Modal functions
+        function openForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').classList.remove('hidden');
+            document.getElementById('resetEmail').focus();
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').classList.add('hidden');
+            document.getElementById('forgotPasswordForm').reset();
+        }
+
+        // Initialize handlers when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            new LoginFormHandler();
+            new ForgotPasswordHandler();
+            
+            // Initialize dark mode
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'dark' || (!darkMode && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+</body>
+</html>

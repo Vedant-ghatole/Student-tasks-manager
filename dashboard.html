@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student Tasks Manager</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- TailwindCSS Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            <i class="fas fa-graduation-cap text-blue-600 mr-2"></i>
+                            Student Tasks Manager
+                        </h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-600">
+                        <i class="fas fa-clock mr-1"></i>
+                        <span id="currentTime"></span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <i class="fas fa-calendar mr-1"></i>
+                        <span id="currentDate"></span>
+                    </div>
+                    <div class="relative">
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900" onclick="toggleNotifications()">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="notificationCount">0</span>
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900" onclick="toggleUserMenu()">
+                            <img class="h-8 w-8 rounded-full bg-gray-300" src="https://via.placeholder.com/32" alt="User">
+                            <span id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden" id="userMenu">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="toggleDarkMode()">
+                                <i class="fas fa-moon mr-2"></i>Dark Mode
+                            </a>
+                            <hr class="my-1">
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="logout()">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-sm min-h-screen">
+            <div class="p-4">
+                <nav class="space-y-2">
+                    <a href="dashboard.html" class="flex items-center px-4 py-2 text-blue-600 bg-blue-50 rounded-lg">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        Dashboard
+                    </a>
+                    <a href="assignments.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-tasks mr-3"></i>
+                        Assignments
+                    </a>
+                    <a href="todo.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-check-circle mr-3"></i>
+                        To-Do List
+                    </a>
+                    <a href="notifications.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-bell mr-3"></i>
+                        Notifications
+                    </a>
+                    <a href="materials.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-book mr-3"></i>
+                        Study Materials
+                    </a>
+                    <a href="attendance.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-chart-line mr-3"></i>
+                        Attendance
+                    </a>
+                    <a href="library.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-book-open mr-3"></i>
+                        Library
+                    </a>
+                    <a href="issues.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-exclamation-triangle mr-3"></i>
+                        Issues
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <!-- Welcome Section -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, <span id="welcomeName">User</span>!</h1>
+                <p class="text-gray-600">Here's what's happening with your academic tasks today.</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-tasks text-blue-600 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Pending Assignments</p>
+                            <p class="text-2xl font-bold text-gray-900" id="pendingAssignments">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chart-line text-green-600 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Average Attendance</p>
+                            <p class="text-2xl font-bold text-gray-900" id="attendancePercentage">0%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-yellow-600 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">To-Do Tasks</p>
+                            <p class="text-2xl font-bold text-gray-900" id="todoTasks">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-bell text-purple-600 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Notifications</p>
+                            <p class="text-2xl font-bold text-gray-900" id="notifications">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Upcoming Deadlines -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Upcoming Deadlines</h2>
+                            <a href="assignments.html" class="text-blue-600 hover:text-blue-700 text-sm">View All</a>
+                        </div>
+                        <div id="upcomingDeadlines">
+                            <p class="text-gray-500 text-center py-4">Loading deadlines...</p>
+                        </div>
+                    </div>
+
+                    <!-- Latest Announcements -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Latest Announcements</h2>
+                            <a href="notifications.html" class="text-blue-600 hover:text-blue-700 text-sm">View All</a>
+                        </div>
+                        <div id="latestAnnouncements">
+                            <p class="text-gray-500 text-center py-4">Loading announcements...</p>
+                        </div>
+                    </div>
+
+                    <!-- Role-specific Widgets -->
+                    <div id="studentWidgets" style="display: none;">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Student Quick Actions</h2>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg text-center">
+                                    <i class="fas fa-upload text-2xl mb-2"></i>
+                                    <p class="font-medium">Submit Assignment</p>
+                                </button>
+                                <button class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg text-center">
+                                    <i class="fas fa-book text-2xl mb-2"></i>
+                                    <p class="font-medium">View Materials</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="teacherWidgets" style="display: none;">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Teacher Quick Actions</h2>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg text-center">
+                                    <i class="fas fa-plus text-2xl mb-2"></i>
+                                    <p class="font-medium">Create Assignment</p>
+                                </button>
+                                <button class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg text-center">
+                                    <i class="fas fa-upload text-2xl mb-2"></i>
+                                    <p class="font-medium">Upload Material</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="crWidgets" style="display: none;">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">CR Quick Actions</h2>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg text-center">
+                                    <i class="fas fa-bullhorn text-2xl mb-2"></i>
+                                    <p class="font-medium">Post Announcement</p>
+                                </button>
+                                <button class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg text-center">
+                                    <i class="fas fa-users text-2xl mb-2"></i>
+                                    <p class="font-medium">Class Updates</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-8">
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                        <div class="space-y-3">
+                            <button class="w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg text-left">
+                                <i class="fas fa-plus mr-2"></i>Add New Task
+                            </button>
+                            <button class="w-full bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg text-left">
+                                <i class="fas fa-upload mr-2"></i>Upload File
+                            </button>
+                            <button class="w-full bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-lg text-left">
+                                <i class="fas fa-comment mr-2"></i>Send Message
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Quick Links -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Contact</h2>
+                        <div class="space-y-3">
+                            <button class="w-full bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg text-left" onclick="contactCR()">
+                                <i class="fab fa-whatsapp mr-2"></i>Contact CR
+                            </button>
+                            <button class="w-full bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg text-left" onclick="contactTeacher()">
+                                <i class="fab fa-whatsapp mr-2"></i>Contact Teacher
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Motivational Quote -->
+                    <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-sm p-6 text-white">
+                        <h2 class="text-xl font-semibold mb-4">Daily Motivation</h2>
+                        <div id="motivationalQuote">
+                            <p class="italic">"Education is the most powerful weapon which you can use to change the world."</p>
+                            <p class="text-sm mt-2">— Nelson Mandela</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
+                        <div id="recentActivity">
+                            <p class="text-gray-500 text-center py-4">No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Firebase Scripts -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script>
+        // Toggle user menu
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Toggle notifications
+        function toggleNotifications() {
+            // Implement notifications panel
+            console.log('Toggle notifications');
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark ? 'dark' : 'light');
+        }
+
+        // Contact functions
+        function contactCR() {
+            const phone = '+1234567890'; // Replace with actual CR phone
+            const message = 'Hi CR, I need help with...';
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function contactTeacher() {
+            const phone = '+1234567890'; // Replace with actual teacher phone
+            const message = 'Hi Teacher, I have a question about...';
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                await window.AuthManager.signOut();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const userMenu = document.getElementById('userMenu');
+            const userButton = event.target.closest('button');
+            
+            if (!userButton || !userButton.onclick || userButton.onclick.toString().includes('toggleUserMenu')) {
+                return;
+            }
+            
+            if (!userMenu.contains(event.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+
+        // Initialize dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Student Tasks Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out',
+                        'shake': 'shake 0.5s ease-in-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-5px)' },
+                            '20%, 40%, 60%, 80%': { transform: 'translateX(5px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen transition-colors duration-300">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-green-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="darkModeToggle" class="p-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 group" title="Toggle dark mode">
+            <i class="fas fa-moon text-gray-600 dark:hidden group-hover:text-primary-600 transition-colors"></i>
+            <i class="fas fa-sun text-gray-300 hidden dark:block group-hover:text-yellow-400 transition-colors"></i>
+        </button>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="fixed top-4 left-4 z-50">
+        <a href="index.html" class="flex items-center px-4 py-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 group text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">
+            <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+            Back to Home
+        </a>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-lg animate-bounce-in">
+            <!-- Auth Card -->
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-8 animate-slide-up">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-full mb-4 shadow-lg">
+                        <i class="fas fa-user-plus text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Join our academic community</p>
+                </div>
+
+                <!-- Signup Form -->
+                <form id="signupForm" class="space-y-6" novalidate>
+                    <!-- Full Name Field -->
+                    <div>
+                        <label for="fullName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Full Name
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="text" 
+                                id="fullName" 
+                                name="fullName" 
+                                required
+                                autocomplete="name"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Enter your full name"
+                                aria-describedby="fullName-error"
+                            >
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i id="fullNameIcon" class="fas fa-check-circle text-green-500 hidden"></i>
+                                <i id="fullNameErrorIcon" class="fas fa-exclamation-circle text-red-500 hidden"></i>
+                            </div>
+                        </div>
+                        <div id="fullName-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Email Address
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                required
+                                autocomplete="email"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Enter your email address"
+                                aria-describedby="email-error"
+                            >
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i id="emailIcon" class="fas fa-check-circle text-green-500 hidden"></i>
+                                <i id="emailErrorIcon" class="fas fa-exclamation-circle text-red-500 hidden"></i>
+                            </div>
+                        </div>
+                        <div id="email-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Phone Field -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Phone Number
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                required
+                                autocomplete="tel"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Enter your phone number"
+                                aria-describedby="phone-error"
+                            >
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <i id="phoneIcon" class="fas fa-check-circle text-green-500 hidden"></i>
+                                <i id="phoneErrorIcon" class="fas fa-exclamation-circle text-red-500 hidden"></i>
+                            </div>
+                        </div>
+                        <div id="phone-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Role Field -->
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Role
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-users text-gray-400"></i>
+                            </div>
+                            <select 
+                                id="role" 
+                                name="role" 
+                                required
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 appearance-none"
+                                aria-describedby="role-error"
+                            >
+                                <option value="">Select your role</option>
+                                <option value="student">Student</option>
+                                <option value="cr">CR/SRC</option>
+                                <option value="teacher">Teacher</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div id="role-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                required
+                                autocomplete="new-password"
+                                class="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Create a password"
+                                aria-describedby="password-error password-requirements"
+                            >
+                            <button 
+                                type="button" 
+                                id="togglePassword" 
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                title="Toggle password visibility"
+                                aria-label="Toggle password visibility"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Password Strength Indicator -->
+                        <div class="mt-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                    <div id="passwordStrength" class="h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                                <span id="passwordStrengthText" class="text-xs text-gray-500 dark:text-gray-400">Weak</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Password Requirements -->
+                        <div id="password-requirements" class="mt-2 space-y-1">
+                            <div class="flex items-center text-xs">
+                                <i id="req-length" class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-500 dark:text-gray-400">At least 8 characters</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i id="req-lowercase" class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-500 dark:text-gray-400">One lowercase letter</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i id="req-uppercase" class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-500 dark:text-gray-400">One uppercase letter</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i id="req-number" class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-500 dark:text-gray-400">One number</span>
+                            </div>
+                            <div class="flex items-center text-xs">
+                                <i id="req-special" class="fas fa-circle text-gray-300 mr-2"></i>
+                                <span class="text-gray-500 dark:text-gray-400">One special character</span>
+                            </div>
+                        </div>
+                        
+                        <div id="password-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Confirm Password
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                required
+                                autocomplete="new-password"
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Confirm your password"
+                                aria-describedby="confirmPassword-error"
+                            >
+                        </div>
+                        <div id="passwordMatch" class="hidden mt-2">
+                            <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                            <span class="text-sm text-green-600 dark:text-green-400">Passwords match</span>
+                        </div>
+                        <div id="passwordMismatch" class="hidden mt-2">
+                            <i class="fas fa-times-circle text-red-500 mr-1"></i>
+                            <span class="text-sm text-red-600 dark:text-red-400">Passwords do not match</span>
+                        </div>
+                        <div id="confirmPassword-error" class="hidden mt-1 text-sm text-red-600 dark:text-red-400"></div>
+                    </div>
+
+                    <!-- Terms Agreement -->
+                    <div class="flex items-start">
+                        <input 
+                            type="checkbox" 
+                            id="agreeTerms" 
+                            required
+                            class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mt-1"
+                        >
+                        <label for="agreeTerms" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                            I agree to the 
+                            <button type="button" onclick="openTermsModal()" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline">Terms of Service</button> 
+                            and 
+                            <button type="button" onclick="openPrivacyModal()" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline">Privacy Policy</button>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        id="signupSubmitBtn"
+                        class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:from-green-700 hover:to-blue-700 focus:ring-4 focus:ring-primary-500/30 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    >
+                        <i class="fas fa-user-plus mr-2"></i>
+                        <span id="signupBtnText">Create Account</span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Signup -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button 
+                            type="button" 
+                            id="googleSignupBtn"
+                            class="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+                        >
+                            <i class="fab fa-google text-red-500 mr-2"></i>
+                            Google
+                        </button>
+                        <button 
+                            type="button" 
+                            id="microsoftSignupBtn"
+                            class="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+                        >
+                            <i class="fab fa-microsoft text-blue-500 mr-2"></i>
+                            Microsoft
+                        </button>
+                    </div>
+
+                    <!-- Sign In Link -->
+                    <div class="text-center">
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Already have an account? 
+                            <a href="login.html" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">
+                                Sign in
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="termsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6 animate-bounce-in">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        <i class="fas fa-file-contract text-primary-600 mr-2"></i>
+                        Terms of Service
+                    </h3>
+                    <button 
+                        onclick="closeTermsModal()"
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        title="Close modal"
+                    >
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="max-h-96 overflow-y-auto space-y-4 text-sm text-gray-700 dark:text-gray-300">
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">1. Acceptance of Terms</h6>
+                        <p>By accessing and using Student Tasks Manager, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                    </div>
+                    
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">2. Use License</h6>
+                        <p>Permission is granted to temporarily download one copy of the materials on Student Tasks Manager for personal, non-commercial transitory viewing only.</p>
+                    </div>
+                    
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">3. User Responsibilities</h6>
+                        <p>Users are responsible for maintaining the confidentiality of their account information and for all activities that occur under their account.</p>
+                    </div>
+                    
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">4. Privacy</h6>
+                        <p>Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service.</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end pt-4">
+                    <button 
+                        onclick="closeTermsModal()"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6 animate-bounce-in">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        <i class="fas fa-shield-alt text-primary-600 mr-2"></i>
+                        Privacy Policy
+                    </h3>
+                    <button 
+                        onclick="closePrivacyModal()"
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        title="Close modal"
+                    >
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="max-h-96 overflow-y-auto space-y-4 text-sm text-gray-700 dark:text-gray-300">
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">1. Information We Collect</h6>
+                        <p>We collect information you provide directly to us, such as when you create an account, submit assignments, or contact us.</p>
+                    </div>
+                    
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">2. How We Use Your Information</h6>
+                        <p>We use the information we collect to provide, maintain, and improve our services, communicate with you, and ensure security.</p>
+                    </div>
+                    
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">3. Information Sharing</h6>
+                        <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent.</p>
+                    </div>
+                    
+                    <div>
+                        <h6 class="font-semibold text-gray-900 dark:text-white mb-2">4. Data Security</h6>
+                        <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, or destruction.</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end pt-4">
+                    <button 
+                        onclick="closePrivacyModal()"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-all duration-200"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Enhanced Signup Form Handler
+        class SignupFormHandler {
+            constructor() {
+                this.form = document.getElementById('signupForm');
+                this.fullNameInput = document.getElementById('fullName');
+                this.emailInput = document.getElementById('email');
+                this.phoneInput = document.getElementById('phone');
+                this.roleInput = document.getElementById('role');
+                this.passwordInput = document.getElementById('password');
+                this.confirmPasswordInput = document.getElementById('confirmPassword');
+                this.submitBtn = document.getElementById('signupSubmitBtn');
+                this.signupBtnText = document.getElementById('signupBtnText');
+                this.googleSignupBtn = document.getElementById('googleSignupBtn');
+                this.microsoftSignupBtn = document.getElementById('microsoftSignupBtn');
+                
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                // Form submission
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                // Real-time validation
+                this.fullNameInput.addEventListener('input', () => this.validateFullName());
+                this.emailInput.addEventListener('input', () => this.validateEmail());
+                this.phoneInput.addEventListener('input', () => this.validatePhone());
+                this.roleInput.addEventListener('change', () => this.validateRole());
+                this.passwordInput.addEventListener('input', () => this.validatePassword());
+                this.confirmPasswordInput.addEventListener('input', () => this.validateConfirmPassword());
+                
+                // Password toggle
+                document.getElementById('togglePassword').addEventListener('click', () => this.togglePassword());
+                
+                // Social signup
+                this.googleSignupBtn.addEventListener('click', () => this.handleGoogleSignup());
+                this.microsoftSignupBtn.addEventListener('click', () => this.handleMicrosoftSignup());
+            }
+
+            validateFullName() {
+                const fullName = this.fullNameInput.value.trim();
+                const isValid = fullName.length >= 2 && /^[a-zA-Z\s]+$/.test(fullName);
+                
+                this.updateFieldValidation(this.fullNameInput, isValid, 'Please enter a valid full name (at least 2 characters, letters only)');
+                return isValid;
+            }
+
+            validateEmail() {
+                const email = this.emailInput.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const isValid = emailRegex.test(email);
+                
+                this.updateFieldValidation(this.emailInput, isValid, 'Please enter a valid email address');
+                return isValid;
+            }
+
+            validatePhone() {
+                const phone = this.phoneInput.value.trim();
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                const isValid = phoneRegex.test(phone.replace(/\s/g, ''));
+                
+                this.updateFieldValidation(this.phoneInput, isValid, 'Please enter a valid phone number');
+                return isValid;
+            }
+
+            validateRole() {
+                const role = this.roleInput.value;
+                const isValid = role !== '';
+                
+                this.updateFieldValidation(this.roleInput, isValid, 'Please select a role');
+                return isValid;
+            }
+
+            validatePassword() {
+                const password = this.passwordInput.value;
+                const requirements = this.checkPasswordRequirements(password);
+                const isValid = requirements.isValid;
+                
+                this.updatePasswordStrength(password, requirements);
+                this.updateFieldValidation(this.passwordInput, isValid, 'Password does not meet requirements');
+                return isValid;
+            }
+
+            checkPasswordRequirements(password) {
+                const requirements = {
+                    length: password.length >= 8,
+                    lowercase: /[a-z]/.test(password),
+                    uppercase: /[A-Z]/.test(password),
+                    number: /\d/.test(password),
+                    special: /[^A-Za-z0-9]/.test(password)
+                };
+                
+                const validCount = Object.values(requirements).filter(Boolean).length;
+                
+                return {
+                    ...requirements,
+                    isValid: validCount >= 4 && requirements.length,
+                    strength: validCount
+                };
+            }
+
+            updatePasswordStrength(password, requirements) {
+                const strengthBar = document.getElementById('passwordStrength');
+                const strengthText = document.getElementById('passwordStrengthText');
+                
+                // Update requirement indicators
+                Object.keys(requirements).forEach(req => {
+                    if (req !== 'isValid' && req !== 'strength') {
+                        const icon = document.getElementById(`req-${req}`);
+                        if (icon) {
+                            if (requirements[req]) {
+                                icon.className = 'fas fa-check text-green-500 mr-2';
+                            } else {
+                                icon.className = 'fas fa-circle text-gray-300 mr-2';
+                            }
+                        }
+                    }
+                });
+                
+                // Update strength bar
+                const strength = requirements.strength;
+                const percentage = (strength / 5) * 100;
+                
+                strengthBar.classList.remove('bg-red-500', 'bg-yellow-500', 'bg-green-500');
+                strengthBar.style.width = `${percentage}%`;
+                
+                if (strength <= 2) {
+                    strengthBar.classList.add('bg-red-500');
+                    strengthText.textContent = 'Weak';
+                    strengthText.className = 'text-xs text-red-600 dark:text-red-400';
+                } else if (strength <= 3) {
+                    strengthBar.classList.add('bg-yellow-500');
+                    strengthText.textContent = 'Medium';
+                    strengthText.className = 'text-xs text-yellow-600 dark:text-yellow-400';
+                } else {
+                    strengthBar.classList.add('bg-green-500');
+                    strengthText.textContent = 'Strong';
+                    strengthText.className = 'text-xs text-green-600 dark:text-green-400';
+                }
+            }
+
+            validateConfirmPassword() {
+                const password = this.passwordInput.value;
+                const confirmPassword = this.confirmPasswordInput.value;
+                const isValid = confirmPassword === password && confirmPassword.length > 0;
+                
+                this.updatePasswordMatch(isValid);
+                this.updateFieldValidation(this.confirmPasswordInput, isValid, 'Passwords do not match');
+                return isValid;
+            }
+
+            updatePasswordMatch(isMatch) {
+                const matchDiv = document.getElementById('passwordMatch');
+                const mismatchDiv = document.getElementById('passwordMismatch');
+                
+                this.confirmPasswordInput.classList.remove('border-green-500', 'border-red-500');
+                matchDiv.classList.add('hidden');
+                mismatchDiv.classList.add('hidden');
+                
+                if (this.confirmPasswordInput.value.length > 0) {
+                    if (isMatch) {
+                        this.confirmPasswordInput.classList.add('border-green-500');
+                        matchDiv.classList.remove('hidden');
+                    } else {
+                        this.confirmPasswordInput.classList.add('border-red-500');
+                        mismatchDiv.classList.remove('hidden');
+                    }
+                }
+            }
+
+            updateFieldValidation(field, isValid, errorMessage) {
+                const errorElement = document.getElementById(`${field.id}-error`);
+                const icon = document.getElementById(`${field.id}Icon`);
+                const errorIcon = document.getElementById(`${field.id}ErrorIcon`);
+                
+                field.classList.remove('border-red-500', 'border-green-500');
+                
+                if (field.value.trim() === '') {
+                    field.classList.remove('border-red-500', 'border-green-500');
+                    if (errorElement) errorElement.classList.add('hidden');
+                    if (icon) icon.classList.add('hidden');
+                    if (errorIcon) errorIcon.classList.add('hidden');
+                    return;
+                }
+                
+                if (isValid) {
+                    field.classList.add('border-green-500');
+                    if (errorElement) errorElement.classList.add('hidden');
+                    if (icon) icon.classList.remove('hidden');
+                    if (errorIcon) errorIcon.classList.add('hidden');
+                } else {
+                    field.classList.add('border-red-500');
+                    if (errorElement) {
+                        errorElement.textContent = errorMessage;
+                        errorElement.classList.remove('hidden');
+                    }
+                    if (icon) icon.classList.add('hidden');
+                    if (errorIcon) errorIcon.classList.remove('hidden');
+                }
+            }
+
+            togglePassword() {
+                const password = this.passwordInput;
+                const icon = document.querySelector('#togglePassword i');
+                
+                if (password.type === 'password') {
+                    password.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    password.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                // Validate all fields
+                const validations = [
+                    this.validateFullName(),
+                    this.validateEmail(),
+                    this.validatePhone(),
+                    this.validateRole(),
+                    this.validatePassword(),
+                    this.validateConfirmPassword()
+                ];
+                
+                if (!validations.every(Boolean)) {
+                    this.form.classList.add('animate-shake');
+                    setTimeout(() => this.form.classList.remove('animate-shake'), 500);
+                    showToast('Please fix the errors in the form', 'error');
+                    return;
+                }
+                
+                const formData = new FormData(this.form);
+                const userData = {
+                    name: formData.get('fullName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    role: formData.get('role'),
+                    password: formData.get('password')
+                };
+                
+                this.setLoadingState(true);
+                
+                try {
+                    if (window.authManager) {
+                        await window.authManager.signUp(userData.email, userData.password, userData);
+                    } else {
+                        // Fallback for demo
+                        await this.demoSignup(userData);
+                    }
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    this.setLoadingState(false);
+                }
+            }
+
+            async demoSignup(userData) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        // Store user data (in real app, this would be sent to server)
+                        localStorage.setItem('userData', JSON.stringify(userData));
+                        
+                        // Show success message
+                        showToast('Account created successfully! Please sign in.', 'success');
+                        
+                        // Redirect to login
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 1500);
+                        resolve();
+                    }, 2000);
+                });
+            }
+
+            setLoadingState(isLoading) {
+                this.submitBtn.disabled = isLoading;
+                if (isLoading) {
+                    this.signupBtnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+                } else {
+                    this.signupBtnText.innerHTML = '<i class="fas fa-user-plus mr-2"></i>Create Account';
+                }
+            }
+
+            async handleGoogleSignup() {
+                try {
+                    if (window.authManager) {
+                        await window.authManager.signInWithGoogle();
+                    } else {
+                        showToast('Google signup coming soon!', 'info');
+                    }
+                } catch (error) {
+                    console.error('Google signup error:', error);
+                    showToast('Google signup failed', 'error');
+                }
+            }
+
+            async handleMicrosoftSignup() {
+                try {
+                    showToast('Microsoft signup coming soon!', 'info');
+                } catch (error) {
+                    console.error('Microsoft signup error:', error);
+                    showToast('Microsoft signup failed', 'error');
+                }
+            }
+        }
+
+        // Modal functions
+        function openTermsModal() {
+            document.getElementById('termsModal').classList.remove('hidden');
+        }
+
+        function closeTermsModal() {
+            document.getElementById('termsModal').classList.add('hidden');
+        }
+
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').classList.remove('hidden');
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').classList.add('hidden');
+        }
+
+        // Initialize handlers when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            new SignupFormHandler();
+            
+            // Initialize dark mode
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'dark' || (!darkMode && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+</body>
+</html>

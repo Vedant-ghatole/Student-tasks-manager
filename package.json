@@ -1,0 +1,50 @@
+{
+  "name": "student-tasks-manager",
+  "version": "1.0.0",
+  "description": "A comprehensive Firebase-powered web application for managing academic tasks, assignments, and communication between students, teachers, and CRs.",
+  "main": "index.html",
+  "scripts": {
+    "start": "firebase serve",
+    "build": "echo 'No build step required for static site'",
+    "deploy": "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:firestore": "firebase deploy --only firestore:rules",
+    "deploy:storage": "firebase deploy --only storage",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'"
+  },
+  "keywords": [
+    "firebase",
+    "education",
+    "task-management",
+    "student-portal",
+    "academic-management",
+    "web-app",
+    "javascript",
+    "tailwindcss",
+    "firestore",
+    "authentication"
+  ],
+  "author": "Student Tasks Manager Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/student-tasks-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/student-tasks-manager/issues"
+  },
+  "homepage": "https://github.com/yourusername/student-tasks-manager#readme",
+  "devDependencies": {
+    "firebase-tools": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "Chrome >= 80",
+    "Firefox >= 75",
+    "Safari >= 13",
+    "Edge >= 80"
+  ]
+}
